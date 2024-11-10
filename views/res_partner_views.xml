@@ -10,7 +10,7 @@
                     <page name='addition_information' string="Additional Information">
                         <group>
                             <field name="linkedin_handle" string="LinkedIN Handle" placeholder="https://linkedin.com/"/>
-                            <field name="lead_ids""/>
+                            <field name="lead_ids"/>
                         </group>
                     </page>
                 </xpath>

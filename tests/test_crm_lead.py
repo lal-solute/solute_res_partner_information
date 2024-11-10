@@ -3,39 +3,43 @@ from odoo import models, tests
 class TestCrmLead(tests.TransactionCase):
 
     def test_create__without_linkedin_handle(self):
-        """Test the connecetion between contact and lead without the LinkedIN handle"""
-        self.env["res.partner"].create(
+        """Test the connection between contact and lead without the LinkedIN handle"""
+
+        name = "Steve Jobs"
+        email = "steve@apple.com"
+
+        # `res.partner` tests
+        res_partner = self.env["res.partner"].create(
             [
                 {
-                    "name": "Steve Jobs",
-                    "email": "steve@apple.com",
-                }
-            ]
-        )
-        res_partner = self.env["res.partner"].search([("name", "=", "Steve Jobs")])[0]
-        self.env["crm.lead"].create(
-            [
-                {
-                    "name": "Steve Jobs",
-                    "type": "opportunity",
-                    "contact": res_partner,
+                    "name": name,
+                    "email": email,
                 }
             ]
         )
 
-
-        crm_lead = self.env["res.partner"].search([("name", "=", "Steve Jobs")])[0]
         self.assertEqual(
-            "Steve Jobs",
+            name,
             res_partner.name
         )
         self.assertEqual(
-            "steve@apple.com",
+            email,
             res_partner.email
         )
         self.assertEqual(
             False,
             res_partner.linkedin_handle
+        )
+
+        # `crm.lead` tests
+        crm_lead = self.env["crm.lead"].create(
+            [
+                {
+                    "name": name,
+                    "type": "opportunity",
+                    "partner_id": res_partner.id,
+                }
+            ]
         )
 
         self.assertEqual(
@@ -43,47 +47,66 @@ class TestCrmLead(tests.TransactionCase):
             crm_lead.linkedin_handle
         )
 
+        self.assertEqual(
+            res_partner.linkedin_handle,
+            crm_lead.linkedin_handle,
+            'linkedin_handle for crm_lead and res_partner must be empty/False'
+        )
+
     def test_create__with_linkedin_handle(self):
-        """Test the connecetion between contact and lead with the LinkedIN handle"""
-        self.env["res.partner"].create(
+        """Test the connection between contact and lead with the LinkedIN handle"""
+
+        name = "Satya Nadella"
+        email = "satya.nadella@microsoft.com"
+        linkedin_url = "https://www.linkedin.com/in/satyanadella/"
+
+        # `res.partner` tests
+        res_partner = self.env["res.partner"].create(
             [
                 {
-                    "name": "Satya Nadella",
-                    "email": "satya.nadella@microsoft.com",
-                    "linkedin_handle": "https://www.linkedin.com/in/satyanadella/",
+                    "name": name,
+                    "email": email,
+                    "linkedin_handle": linkedin_url,
                 }
             ]
         )
-        res_partner = self.env["res.partner"].search([("name", "=", "Satya Nadella")])[0]
-        self.env["crm.lead"].create(
+
+        self.assertEqual(
+            name,
+            res_partner.name,
+        )
+        self.assertEqual(
+            email,
+            res_partner.email,
+        )
+        self.assertEqual(
+            linkedin_url,
+            res_partner.linkedin_handle,
+        )
+
+        # `crm.lead` tests
+        crm_lead = self.env["crm.lead"].create(
             [
                 {
-                    "name": "Satya Nadella",
+                    "name": name,
                     "type": "opportunity",
-                    "contact": res_partner,
+                    "partner_id": res_partner.id,
                 }
             ]
         )
-        crm_lead = self.env["res.partner"].search([("name", "=", "Satya Nadella")])[0]
+
         self.assertEqual(
-            "Satya Nadella",
-            res_partner.name
+            name,
+            crm_lead.name,
         )
+
         self.assertEqual(
-            "satya.nadella@microsoft.com",
-            res_partner.email
+            linkedin_url,
+            crm_lead.linkedin_handle,
         )
+
         self.assertEqual(
-            "Satya Nadella",
-            crm_lead.name
-        )
-        self.assertEqual(
-            self.assertEqual(
-                "https://www.linkedin.com/in/satyanadella/",
-                crm_lead.linkedin_handle
-            )
-        )
-        self.assertEqual(
-            "https://www.linkedin.com/in/satyanadella/",
-            res_partner.linkedin_handle
+            res_partner.linkedin_handle,
+            crm_lead.linkedin_handle,
+            'linkedin_handle for crm_lead and res_partner must be equal'
         )

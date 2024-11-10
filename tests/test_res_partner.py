@@ -4,21 +4,25 @@ class TestResPartner(tests.TransactionCase):
 
     def test_create__without_linkedin_handle(self):
         """Test contact without the LinkedIN handle"""
-        self.env["res.partner"].create(
+
+        name = "Steve Jobs"
+        email = "steve@apple.com"
+
+        res_partner = self.env["res.partner"].create(
             [
                 {
-                    "name": "Steve Jobs",
-                    "email": "steve@apple.com",
+                    "name": name,
+                    "email": email,
                 }
             ]
         )
-        res_partner = self.env["res.partner"].search([("name", "=", "Steve Jobs")])[0]
+
         self.assertEqual(
-            "Steve Jobs",
+            name,
             res_partner.name
         )
         self.assertEqual(
-            "steve@apple.com",
+            email,
             res_partner.email
         )
         self.assertEqual(
@@ -28,25 +32,30 @@ class TestResPartner(tests.TransactionCase):
 
     def test_create__with_linkedin_handle(self):
         """Test contact with the LinkedIN handle"""
-        self.env["res.partner"].create(
+
+        name = "Satya Nadella"
+        email = "satya.nadella@microsoft.com"
+        linkedin_url = "https://www.linkedin.com/in/satyanadella/"
+
+        res_partner = self.env["res.partner"].create(
             [
                 {
-                    "name": "Satya Nadella",
-                    "email": "satya.nadella@microsoft.com",
-                    "linkedin_handle": "https://www.linkedin.com/in/satyanadella/",
+                    "name": name,
+                    "email": email,
+                    "linkedin_handle": linkedin_url,
                 }
             ]
         )
-        res_partner = self.env["res.partner"].search([("name", "=", "Satya Nadella")])[0]
+
         self.assertEqual(
-            "Satya Nadella",
+            name,
             res_partner.name
         )
         self.assertEqual(
-            "satya.nadella@microsoft.com",
+            email,
             res_partner.email
         )
         self.assertEqual(
-            "https://www.linkedin.com/in/satyanadella/",
+            linkedin_url,
             res_partner.linkedin_handle
         )
