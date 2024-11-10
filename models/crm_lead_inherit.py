@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class CrmLead(models.Model):
@@ -15,3 +16,10 @@ class CrmLead(models.Model):
         for rec in self:
             rec.linkedin_handle = rec.partner_id.linkedin_handle
 
+    @api.constrains('partner_id')
+    def _check_unique_partner(self):
+        """ to ensure it is a one-to-one relationship, we might need to add a constraint to
+         prevent multiple `crm.lead` records from referencing the same `res.partner`."""
+        for lead in self:
+            if lead.partner_id and self.search([('partner_id', '=', lead.partner_id.id), ('id', '!=', lead.id)]):
+                raise ValidationError("A customer can only be linked to one opportunity.")
