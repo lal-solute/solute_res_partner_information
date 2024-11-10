@@ -6,7 +6,7 @@
     "website": "https://www.solute.de",
     "license": "GPL-3",
     "category": "Base",
-    "depends": ["base", "contacts"],
-    "data": ["views/res_partner_views.xml"],
+    "depends": ["base", "contacts", "crm"],
+    "data": ["views/res_partner_views.xml", "views/crm_lead_views.xml"],
     "application": False,
 }
